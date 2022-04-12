@@ -1,0 +1,14 @@
+---
+- name: Create maxscale database users
+  include_tasks: db-preparation.yml
+
+- name: Install maxscale
+  include_tasks: install.yml
+  when:
+    - maxscale_use_docker|bool == false
+    - maxscale_install_repo_script|bool == true
+
+- name: Start docker container
+  include_tasks: docker.yml
+  when: maxscale_use_docker
+    - maxscale_use_docker|bool == true

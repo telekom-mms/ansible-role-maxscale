@@ -1,0 +1,30 @@
+---
+- name: install prerequisites
+  yum:
+    name:
+      - docker
+    state: present
+
+- name: enable ipv4 forwarding for docker usage
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    state: present
+
+- name: create maxscale config
+  template:
+    src: maxscale.cnf.j2
+    dest: "{{ maxscale_config_file_path }}"
+    mode: 0644
+
+- name: start maxscale docker container
+  docker_container:
+    name: maxscale
+    image: mariadb/maxscale
+    state: started
+    restart: yes
+    ports:
+      - "{{ maxscale_admin_port }}:{{ maxscale_admin_port }}"
+      - "{{ maxscale_config_listener_list.ports }}:{{ maxscale_config_listener_list.ports }}"
+    volumes:
+      - "{{ maxscale_config_file_path }}:/etc/maxscale.cnf"

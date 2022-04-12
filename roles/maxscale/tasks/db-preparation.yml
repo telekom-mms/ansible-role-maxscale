@@ -1,0 +1,33 @@
+---
+- block:
+    - name: create maxscale db user
+      mysql_user:
+        name: "{{ maxscale_database_user_name }}"
+        password: "{{ maxscale_database_user_password }}"
+        host: "{{ maxscale_database_user_host }}"
+        priv:
+          - 'mysql.user': '  '
+          - 'mysql.db': 'SELECT'
+          - 'mysql.tables_priv': 'SELECT'
+          - 'mysql.columns_priv': 'SELECT'
+          - 'mysql.procs_priv': 'SELECT'
+          - 'mysql.proxies_priv': 'SELECT'
+          - 'mysql.roles_mapping': 'SELECT'
+        login_user: "{{ database_login_user_name }}"
+        encrypted: true
+        login_password: "{{ database_login_user_password }}"
+        state: present
+        append_privs: true
+        login_unix_socket: "{{ socket }}"
+
+    - name: create maxscale monitor user
+      mysql_user:
+        name: "{{ maxscale_database_monitor_user_name }}"
+        password: "{{ maxscale_database_monitor_user_password:  }}"
+        host: "{{ maxscale_database_monitor_user_host }}"
+        login_user: "{{ database_login_user_name }}"
+        encrypted: true
+        login_password: "{{ database_login_user_password }}"
+        state: present
+        login_unix_socket: "{{ socket }}"
+  delegate_to: "{{ database_login_host }}"

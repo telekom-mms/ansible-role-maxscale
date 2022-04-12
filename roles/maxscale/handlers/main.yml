@@ -1,0 +1,11 @@
+---
+- name: verify maxscale config
+  become: true
+  become_user: maxscale
+  shell: "maxscale -c"
+  notify: restart maxscale
+
+- name: restart maxscale
+  service:
+    name: maxscale
+    state: restarted
