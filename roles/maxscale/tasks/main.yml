@@ -10,5 +10,5 @@
 
 - name: Start docker container
   include_tasks: docker.yml
-  when: maxscale_use_docker
+  when: 
     - maxscale_use_docker|bool == true
