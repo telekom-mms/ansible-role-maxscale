@@ -2,7 +2,8 @@
 - name: install prerequisites
   yum:
     name:
-      - docker
+      - docker-ce
+      - python-docker
     state: present
 
 - name: enable ipv4 forwarding for docker usage
@@ -25,6 +26,7 @@
     restart: yes
     ports:
       - "{{ maxscale_admin_port }}:{{ maxscale_admin_port }}"
-      - "{{ maxscale_config_listener_list.ports }}:{{ maxscale_config_listener_list.ports }}"
+      - "{{ item.port }}:{{ item.port }}"
     volumes:
       - "{{ maxscale_config_file_path }}:/etc/maxscale.cnf"
+  loop: "{{ maxscale_config_listener_list }}"
