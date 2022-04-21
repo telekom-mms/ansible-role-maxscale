@@ -36,6 +36,7 @@ servers={{ maxscale_service.servers }}
 user={{ maxscale_database_user_name }}
 password={{ maxscale_database_user_password }}
 use_sql_variables_in=master
+{% endfor %}
 
 {% for maxscale_listener in maxscale_config_listener_list %}
 [{{ maxscale_listener.name }}]
@@ -44,3 +45,4 @@ service={{ maxscale_listener.service }}
 protocol={{ maxscale_listener.protocol|default("MariaDBClient") }}
 port={{ maxscale_listener.port }}
 address={{ maxscale_listener.address }}
+{% endfor %}
