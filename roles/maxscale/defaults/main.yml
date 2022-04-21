@@ -4,6 +4,7 @@ maxscale_database_user_host: "%"
 maxscale_database_monitor_user_name: maxscale_monitor_user
 maxscale_database_monitor_user_host: "%"
 
+maxscale_use_docker: true
 maxscale_install_repo_script: true
 maxscale_config_file_path: /etc/maxscale.cnf
 maxscale_admin_host: 127.0.0.1
