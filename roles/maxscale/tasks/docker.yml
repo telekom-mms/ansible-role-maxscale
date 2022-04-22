@@ -6,6 +6,9 @@
       - python-docker
     state: present
 
+# If this one fails check if exec-shield is found in sysctl.conf and remove it
+# It has been removed with RHEL/CentOS 7
+# https://access.redhat.com/solutions/974563
 - name: enable ipv4 forwarding for docker usage
   sysctl:
     name: net.ipv4.ip_forward
