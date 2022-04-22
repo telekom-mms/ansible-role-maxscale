@@ -6,7 +6,6 @@
   include_tasks: install.yml
   when:
     - maxscale_use_docker|bool == false
-    - maxscale_install_repo_script|bool == true
 
 - name: Start docker container
   include_tasks: docker.yml
