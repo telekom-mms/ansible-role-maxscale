@@ -1,4 +1,5 @@
 ---
+# handlers file for ansible-role-maxscale
 - name: verify maxscale config
   become: true
   become_user: maxscale
