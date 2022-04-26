@@ -1,4 +1,5 @@
 ---
+# tasks file for ansible-role-maxscale
 - name: Create maxscale database users
   include_tasks: db-preparation.yml
 
@@ -9,5 +10,5 @@
 
 - name: Start docker container
   include_tasks: docker.yml
-  when: 
+  when:
     - maxscale_use_docker|bool == true
