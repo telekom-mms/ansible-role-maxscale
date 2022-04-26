@@ -8,7 +8,7 @@ admin_secure_gui={{ maxscale_admin_secure_gui|default("true")}}
 
 
 ## the following parts are controlled via the type
-## ultimatelty it could be dampened down to one jinja block with a whole lot of ifs and fors
+## ultimately it could be dampened down to one jinja block with a whole lot of ifs and fors
 
 {% for server in maxscale_config_server_list %}
 [{{ server.name }}]
@@ -16,6 +16,7 @@ type=server
 address={{ server.address }}
 port={{ server.port }}
 protocol={{ server.protocol|default("MariaDBBackend") }}
+
 {% endfor %}
 
 {% for maxscale_monitor in maxscale_config_monitor_list %}
@@ -35,7 +36,7 @@ router={{ maxscale_service.router }}
 servers={{ maxscale_service.servers }}
 user={{ maxscale_database_user_name }}
 password={{ maxscale_database_user_password }}
-use_sql_variables_in=master
+use_sql_variables_in={{ maxscale_config_use_sql_variables_in|default("all") }}
 {% endfor %}
 
 {% for maxscale_listener in maxscale_config_listener_list %}
