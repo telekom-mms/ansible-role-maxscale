@@ -1,3 +1,5 @@
+---
+# defaults file for ansible-role-maxscale
 maxscale_database_user_name: maxscale
 maxscale_database_user_host: "%"
 
@@ -9,30 +11,3 @@ maxscale_install_repo_script: true
 maxscale_config_file_path: /etc/maxscale.cnf
 maxscale_admin_host: 127.0.0.1
 maxscale_admin_port: 8989
-
-maxscale_config_server_list:
-  - name: server1
-    address: 127.0.0.1
-    port: 3306
-  - name: server2
-    address: 127.0.0.2
-    port: 3306
-  - name: server3
-    address: 127.0.0.3
-    port: 3306
-
-maxscale_config_monitor_list:
-  - name: Galera-Monitor
-    module: galeramon
-    servers: "server1, server2, server3"
-
-maxscale_config_service_list:
-  - name: Splitter-Service
-    router: readwritesplit
-    servers: "server1, server2, server3"
-
-maxscale_config_listener_list:
-  - name: Splitter-Listener
-    service: Splitter-Service
-    port: 3306
-    address: 0.0.0.0
