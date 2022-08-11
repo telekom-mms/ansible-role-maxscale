@@ -57,7 +57,7 @@ address={{ maxscale_listener.address }}
 [{{ maxscale_filter.name }}]
 type=filter
 module={{ maxscale_filter.module|default("namedserverfilter") }}
-{% for match in maxscale_filter.matches %}}
+{% for match in maxscale_filter.matches %}
 match{{ match.number }}={{ match.value }}
 target{{ match.number }}={{ match.target|default("->master") }}
 {% endfor %}
