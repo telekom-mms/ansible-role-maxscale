@@ -47,3 +47,13 @@ protocol={{ maxscale_listener.protocol|default("MariaDBClient") }}
 port={{ maxscale_listener.port }}
 address={{ maxscale_listener.address }}
 {% endfor %}
+
+{% for maxscale_filter in maxscale_config_filter_list %}
+[{{ maxscale_filter.name }}]
+type=filter
+module={{ maxscale_filter.module|default("namedserverfilter") }}
+{% for match in matches %}}
+match{{ match.number }}={{ maxscale_filter.value }}
+target{{ match.number }}={{ maxscale_filter.target }}
+{% endfor %}
+{% endfor %}

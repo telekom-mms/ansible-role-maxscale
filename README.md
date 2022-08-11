@@ -76,7 +76,13 @@ Role Variables
 | &ensp;port | yes |  | Port to use for listener |
 | &ensp;address | yes |  | Address to bind listener to |
 | &ensp;protocol | no | MariaDBClient | Protocol to use for listener. Possible values: [*MariaDBClient*](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#mariadbclient), [*CDC*](https://mariadb.com/kb/en/mariadb-maxscale-6-change-data-capture-cdc-protocol/) |
-
+| *maxscale_config_filter_list* | no | | |
+| &ensp;name | yes | | |
+| &ensp;module | no | namedserverfilter | |
+| &ensp;matches | yes | | | List of paterns to match with targets
+| &ensp;number | yes | | Number of Match in format 01, 02, ...,10,11. Max is 25 per filter. |
+| &ensp;value | yes | | Pattern to match. Supports regex (see. [maxscale documentation](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#regular-expressions))|
+| &ensp;target | yes | | Server to which matching statements should be routed. It is possible to route queries to servers based on their role in maxscale. Possible entries: '->master','->slave',myserver,172.4.2.1 |
 
 Dependencies
 ------------
@@ -137,7 +143,13 @@ Example Playbook
             service: Splitter-Service
             port: 3306
             address: 172.25.2.3
-
+        # filter list for maxscale
+        maxscale_config_filter_list:
+          - name: "freelance"
+            matches:
+              - number: "01"
+                value: "^SHOW STATUS WHERE Variable_name.*"
+                target: "->master"
 License
 -------
 
