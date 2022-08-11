@@ -34,6 +34,12 @@ Role Variables
 | maxscale_database_monitor_user_password | yes |  | Password of maxscale monitor user |
 | maxscale_database_monitor_user_host | no | % | Host of maxscale monitor user |
 | maxscale_use_docker | no | true | Install docker, download latest maxscale container and start it with your configuration. |
+| maxscale_docker_version | no | latest | Set container version to use.
+| maxscale_docker_state | no | started | Set state of container: (started, stopped, absent, present).
+| maxscale_docker_restart | no | false | Restart container even if no changes happened.
+| maxscale_docker_pull_image | no | false | Set policy for image pulling when image is already present. True for always, false for never.
+| maxscale_docker_recreate | no | false | Force recreation of existing container.
+
 | maxscale_install_repo_script | no | true | Use installscript provided by MariaDB to install repository if not using docker. Set to false if you want to manage it by yourself. |
 | maxscale_config_file_path | no | /etc/maxscale.cnf | Path and name of maxscale config. This path will also be mounted in docker container and used as main config. |
 | maxscale_admin_host | no | 127.0.0.1 | IP to bind MariaDB MaxScale GUI |
