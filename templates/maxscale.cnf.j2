@@ -37,8 +37,11 @@ servers={{ maxscale_service.servers }}
 user={{ maxscale_database_user_name }}
 password={{ maxscale_database_user_password }}
 use_sql_variables_in={{ maxscale_config_use_sql_variables_in|default("all") }}
-{% if maxscale_config_filter_list is defined %}}
-filters={{ maxscale_config_filter_list.name|join(',') }}
+{% if maxscale_config_filter_list is defined %}
+{% for filter in maxscale_config_filter_list %}
+filters={{ filter.name }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 {% for maxscale_listener in maxscale_config_listener_list %}
@@ -54,8 +57,8 @@ address={{ maxscale_listener.address }}
 [{{ maxscale_filter.name }}]
 type=filter
 module={{ maxscale_filter.module|default("namedserverfilter") }}
-{% for match in matches %}}
-match{{ match.number }}={{ maxscale_filter.value }}
-target{{ match.number }}={{ maxscale_filter.target|default("->master") }}
+{% for match in maxscale_filter.matches %}}
+match{{ match.number }}={{ match.value }}
+target{{ match.number }}={{ match.target|default("->master") }}
 {% endfor %}
 {% endfor %}
