@@ -12,6 +12,15 @@ Requirements
 ------------
 
 - ansible [community.mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/index.html#plugins-in-community-mysql) module
+
+```bash
+ansible-galaxy collection install community.mysql
+
+or
+
+ansible-galaxy collection install -r requirements.yml
+```
+
 - The default "deployment" behaviour is using Docker. Installation is not done in this role.
 
 If you want external access to the admin REST GUI you need to overwrite the default bind address and configure your firewall if active.
