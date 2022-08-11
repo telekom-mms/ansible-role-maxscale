@@ -82,7 +82,7 @@ Role Variables
 | &ensp;matches | yes | | | List of paterns to match with targets
 | &ensp;number | yes | | Number of Match in format 01, 02, ...,10,11. Max is 25 per filter. |
 | &ensp;value | yes | | Pattern to match. Supports regex (see. [maxscale documentation](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#regular-expressions))|
-| &ensp;target | yes | | Server to which matching statements should be routed. It is possible to route queries to servers based on their role in maxscale. Possible entries: '->master','->slave',myserver,172.4.2.1 |
+| &ensp;target | no | ->master | Server to which matching statements should be routed. It is possible to route queries to servers based on their role in maxscale. Possible entries: '->master','->slave',myserver,172.4.2.1 |
 
 Dependencies
 ------------

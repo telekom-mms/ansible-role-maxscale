@@ -54,6 +54,6 @@ type=filter
 module={{ maxscale_filter.module|default("namedserverfilter") }}
 {% for match in matches %}}
 match{{ match.number }}={{ maxscale_filter.value }}
-target{{ match.number }}={{ maxscale_filter.target }}
+target{{ match.number }}={{ maxscale_filter.target|default("->master") }}
 {% endfor %}
 {% endfor %}
