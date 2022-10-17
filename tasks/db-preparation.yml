@@ -6,6 +6,7 @@
         password: "{{ maxscale_database_user_password }}"
         host: "{{ maxscale_database_user_host }}"
         priv:
+          '*.*': 'SHOW DATABASES'
           'mysql.user': 'SELECT'
           'mysql.db': 'SELECT'
           'mysql.tables_priv': 'SELECT'
