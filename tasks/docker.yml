@@ -20,6 +20,8 @@
     image: mariadb/maxscale
     state: started
     restart: yes
+    restart_policy: always
+    restart_retries: 3
     ports:
       - "{{ maxscale_admin_port }}:{{ maxscale_admin_port }}"
       - "{{ item.port }}:{{ item.port }}"
