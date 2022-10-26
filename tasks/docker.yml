@@ -17,9 +17,11 @@
 - name: start maxscale docker container
   docker_container:
     name: maxscale
-    image: mariadb/maxscale
-    state: started
-    restart: yes
+    image: "mariadb/maxscale:{{ maxscale_docker_version | default('latest') }}"
+    state: "{{ maxscale_docker_state | default('started') }}"
+    restart: "{{ maxscale_docker_restart | default('false') }}"
+    pull: "{{ maxscale_docker_pull_image | default('false') }}"
+    recreate: "{{ maxscale_docker_recreate | default('false') }}"
     restart_policy: always
     restart_retries: 3
     ports:

@@ -12,6 +12,15 @@ Requirements
 ------------
 
 - ansible [community.mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/index.html#plugins-in-community-mysql) module
+
+```bash
+ansible-galaxy collection install community.mysql
+
+or
+
+ansible-galaxy collection install -r requirements.yml
+```
+
 - The default "deployment" behaviour is using Docker. Installation is not done in this role.
 
 If you want external access to the admin REST GUI you need to overwrite the default bind address and configure your firewall if active.
@@ -34,6 +43,12 @@ Role Variables
 | maxscale_database_monitor_user_password | yes |  | Password of maxscale monitor user |
 | maxscale_database_monitor_user_host | no | % | Host of maxscale monitor user |
 | maxscale_use_docker | no | true | Install docker, download latest maxscale container and start it with your configuration. |
+| maxscale_docker_version | no | latest | Set container version to use.
+| maxscale_docker_state | no | started | Set state of container: (started, stopped, absent, present).
+| maxscale_docker_restart | no | false | Restart container even if no changes happened.
+| maxscale_docker_pull_image | no | false | Set policy for image pulling when image is already present. True for always, false for never.
+| maxscale_docker_recreate | no | false | Force recreation of existing container.
+
 | maxscale_install_repo_script | no | true | Use installscript provided by MariaDB to install repository if not using docker. Set to false if you want to manage it by yourself. |
 | maxscale_config_file_path | no | /etc/maxscale.cnf | Path and name of maxscale config. This path will also be mounted in docker container and used as main config. |
 | maxscale_admin_host | no | 127.0.0.1 | IP to bind MariaDB MaxScale GUI |
@@ -61,7 +76,13 @@ Role Variables
 | &ensp;port | yes |  | Port to use for listener |
 | &ensp;address | yes |  | Address to bind listener to |
 | &ensp;protocol | no | MariaDBClient | Protocol to use for listener. Possible values: [*MariaDBClient*](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#mariadbclient), [*CDC*](https://mariadb.com/kb/en/mariadb-maxscale-6-change-data-capture-cdc-protocol/) |
-
+| *maxscale_config_filter_list* | no | | |
+| &ensp;name | yes | | |
+| &ensp;module | no | namedserverfilter | |
+| &ensp;matches | yes | | | List of paterns to match with targets
+| &ensp;number | yes | | Number of Match in format 01, 02, ...,10,11. Max is 25 per filter. |
+| &ensp;value | yes | | Pattern to match. Supports regex (see. [maxscale documentation](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#regular-expressions))|
+| &ensp;target | no | ->master | Server to which matching statements should be routed. It is possible to route queries to servers based on their role in maxscale. Possible entries: '->master','->slave',myserver,172.4.2.1 |
 
 Dependencies
 ------------
@@ -122,7 +143,13 @@ Example Playbook
             service: Splitter-Service
             port: 3306
             address: 172.25.2.3
-
+        # filter list for maxscale
+        maxscale_config_filter_list:
+          - name: "freelance"
+            matches:
+              - number: "01"
+                value: "^SHOW STATUS WHERE Variable_name.*"
+                target: "->master"
 License
 -------
 

@@ -37,6 +37,11 @@ servers={{ maxscale_service.servers }}
 user={{ maxscale_database_user_name }}
 password={{ maxscale_database_user_password }}
 use_sql_variables_in={{ maxscale_config_use_sql_variables_in|default("all") }}
+{% if maxscale_config_filter_list is defined %}
+{% for filter in maxscale_config_filter_list %}
+filters={{ filter.name }}
+{% endfor %}
+{% endif %}
 {% endfor %}
 
 {% for maxscale_listener in maxscale_config_listener_list %}
@@ -46,4 +51,14 @@ service={{ maxscale_listener.service }}
 protocol={{ maxscale_listener.protocol|default("MariaDBClient") }}
 port={{ maxscale_listener.port }}
 address={{ maxscale_listener.address }}
+{% endfor %}
+
+{% for maxscale_filter in maxscale_config_filter_list %}
+[{{ maxscale_filter.name }}]
+type=filter
+module={{ maxscale_filter.module|default("namedserverfilter") }}
+{% for match in maxscale_filter.matches %}
+match{{ match.number }}={{ match.value }}
+target{{ match.number }}={{ match.target|default("->master") }}
+{% endfor %}
 {% endfor %}

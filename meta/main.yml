@@ -43,5 +43,4 @@ galaxy_info:
     - maxscale
     - mariadb
 
-dependencies:
-  - "community.mysql": "*"
+dependencies: []
