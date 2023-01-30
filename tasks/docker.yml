@@ -22,6 +22,8 @@
     restart: "{{ maxscale_docker_restart | default('false') }}"
     pull: "{{ maxscale_docker_pull_image | default('false') }}"
     recreate: "{{ maxscale_docker_recreate | default('false') }}"
+    restart_policy: always
+    restart_retries: 3
     ports:
       - "{{ maxscale_admin_port }}:{{ maxscale_admin_port }}"
       - "{{ item.port }}:{{ item.port }}"
