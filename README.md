@@ -48,41 +48,40 @@ Role Variables
 | maxscale_docker_restart | no | false | Restart container even if no changes happened.
 | maxscale_docker_pull_image | no | false | Set policy for image pulling when image is already present. True for always, false for never.
 | maxscale_docker_recreate | no | false | Force recreation of existing container.
-
 | maxscale_install_repo_script | no | true | Use installscript provided by MariaDB to install repository if not using docker. Set to false if you want to manage it by yourself. |
 | maxscale_config_file_path | no | /etc/maxscale.cnf | Path and name of maxscale config. This path will also be mounted in docker container and used as main config. |
 | maxscale_admin_host | no | 127.0.0.1 | IP to bind MariaDB MaxScale GUI |
 | maxscale_admin_port | no | 8989 | Port to bind MariaDB MaxScale GUI |
 | maxscale_admin_secure_gui | no | true | Change SSL usage for MariaDB MaxScale GUI. By default true but no certificates are beeing created. You will have to [do it yourself](https://mariadb.com/resources/blog/getting-started-with-the-mariadb-maxscale-gui/) (Search for "Create Self Signed Certificate for MaxScale Rest API") |
 | *maxscale_config_server_list* |  |  | List of servers which maxscale should proxy to |
-| &ensp;name | yes |  | Name of the database server (can be chosen freely) |
-| &ensp;address | yes |  | Adress or FQDN of the database server |
-| &ensp;port | yes |  | Port of the database server |
-| &ensp;protocol | no | MariaDBBackend | Protocol to use for server connection. [**Currently no other protocols are supported**](https://mariadb.com/kb/en/mariadb-maxscale-22-mariadb-maxscale-configuration-usage-scenarios/#protocol). |
+| name | yes |  | Name of the database server (can be chosen freely) |
+| address | yes |  | Adress or FQDN of the database server |
+| port | yes |  | Port of the database server |
+| protocol | no | MariaDBBackend | Protocol to use for server connection. [**Currently no other protocols are supported**](https://mariadb.com/kb/en/mariadb-maxscale-22-mariadb-maxscale-configuration-usage-scenarios/#protocol). |
 | *maxscale_config_monitor_list* |  |  | List of maxscale monitors |
-| &ensp;name | yes |  | Name of monitor (can be chosen freely) |
-| &ensp;module | yes |  | Possible values *galeramon*, *mariadbmon*. |
-| &ensp;servers | yes |  | Comma seperated list of servers which maxscale should include in configured monitor. |
-| &ensp;monitor_interval | no | 2000ms | Interval in which the monitor checks the servers |
+| name | yes |  | Name of monitor (can be chosen freely) |
+| module | yes |  | Possible values *galeramon*, *mariadbmon*. |
+| servers | yes |  | Comma seperated list of servers which maxscale should include in configured monitor. |
+| monitor_interval | no | 2000ms | Interval in which the monitor checks the servers |
 | *maxscale_config_service_list* |  |  | List of maxscale services |
-| &ensp;name | yes |  | Name of service (can be chosen freely) |
-| &ensp;router | yes |  | Possible values: *readwritesplit*, *readconnroute*. In connection with router_options it is possible to create 2 services which take care of a read and write split if readwritesplit router is not used. |
-| &ensp;router_options | no |  | Options for router. Values: *master*, *slave* |
-| &ensp;servers | yes |  | Comma seperated list of servers which maxscale should include in configured service. |
-| &ensp;use_sql_variables_in | no | all | Queries, which read session variables will be routed to. Possible values are *master*, *all*. [More Information](https://mariadb.com/kb/en/mariadb-maxscale-21-readwritesplit/#use_sql_variables_in) |
+| name | yes |  | Name of service (can be chosen freely) |
+| router | yes |  | Possible values: *readwritesplit*, *readconnroute*. In connection with router_options it is possible to create 2 services which take care of a read and write split if readwritesplit router is not used. |
+| router_options | no |  | Options for router. Values: *master*, *slave* |
+| servers | yes |  | Comma seperated list of servers which maxscale should include in configured service. |
+| use_sql_variables_in | no | all | Queries, which read session variables will be routed to. Possible values are *master*, *all*. [More Information](https://mariadb.com/kb/en/mariadb-maxscale-21-readwritesplit/#use_sql_variables_in) |
 | *maxscale_config_listener_list* |  |  |  |
-| &ensp;name | yes |  | Name of listener (can be chosen freely) |
-| &ensp;service | yes |  | Name of beforehand defined service to use for listener. (eg. My-Splitter-Service, My-Read-Service) |
-| &ensp;port | yes |  | Port to use for listener |
-| &ensp;address | yes |  | Address to bind listener to |
-| &ensp;protocol | no | MariaDBClient | Protocol to use for listener. Possible values: [*MariaDBClient*](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#mariadbclient), [*CDC*](https://mariadb.com/kb/en/mariadb-maxscale-6-change-data-capture-cdc-protocol/) |
+| name | yes |  | Name of listener (can be chosen freely) |
+| service | yes |  | Name of beforehand defined service to use for listener. (eg. My-Splitter-Service, My-Read-Service) |
+| port | yes |  | Port to use for listener |
+| address | yes |  | Address to bind listener to |
+| protocol | no | MariaDBClient | Protocol to use for listener. Possible values: [*MariaDBClient*](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#mariadbclient), [*CDC*](https://mariadb.com/kb/en/mariadb-maxscale-6-change-data-capture-cdc-protocol/) |
 | *maxscale_config_filter_list* | no | | |
-| &ensp;name | yes | | |
-| &ensp;module | no | namedserverfilter | |
-| &ensp;matches | yes | | | List of paterns to match with targets
-| &ensp;number | yes | | Number of Match in format 01, 02, ...,10,11. Max is 25 per filter. |
-| &ensp;value | yes | | Pattern to match. Supports regex (see. [maxscale documentation](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#regular-expressions))|
-| &ensp;target | no | ->master | Server to which matching statements should be routed. It is possible to route queries to servers based on their role in maxscale. Possible entries: '->master','->slave',myserver,172.4.2.1 |
+| name | yes | | |
+| module | no | namedserverfilter | |
+| matches | yes | | | List of paterns to match with targets
+| number | yes | | Number of Match in format 01, 02, ...,10,11. Max is 25 per filter. |
+| value | yes | | Pattern to match. Supports regex (see. [maxscale documentation](https://mariadb.com/kb/en/mariadb-maxscale-6-mariadb-maxscale-configuration-guide/#regular-expressions))|
+| target | no | ->master | Server to which matching statements should be routed. It is possible to route queries to servers based on their role in maxscale. Possible entries: '->master','->slave',myserver,172.4.2.1 |
 
 Dependencies
 ------------
