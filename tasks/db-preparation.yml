@@ -1,7 +1,7 @@
 ---
 - block:
     - name: create maxscale db user
-      community.mysql.mysql_user:
+      ansible.mysql.mysql_user:
         name: "{{ maxscale_database_user_name }}"
         password: "{{ maxscale_database_user_password }}"
         host: "{{ maxscale_database_user_host }}"
@@ -22,7 +22,7 @@
         login_unix_socket: "{{ database_login_socket }}"
 
     - name: create maxscale monitor user
-      community.mysql.mysql_user:
+      ansible.mysql.mysql_user:
         name: "{{ maxscale_database_monitor_user_name }}"
         password: "{{ maxscale_database_monitor_user_password }}"
         host: "{{ maxscale_database_monitor_user_host }}"
