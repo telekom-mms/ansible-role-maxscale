@@ -11,10 +11,10 @@ It is also heavily based on configurations for MariaDB.
 Requirements
 ------------
 
-- ansible [community.mysql](https://docs.ansible.com/ansible/latest/collections/community/mysql/index.html#plugins-in-community-mysql) module
+- collection [ansible.mysql](https://docs.ansible.com/projects/ansible/latest/collections/ansible/mysql/index.html#plugins-in-ansible-mysql)
 
 ```bash
-ansible-galaxy collection install community.mysql
+ansible-galaxy collection install ansible.mysql
 
 or
 
