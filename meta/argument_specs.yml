@@ -1,0 +1,213 @@
+---
+argument_specs:
+  main:
+    short_description: The main entry point for the maxscale role.
+    options:
+      database_login_user_name:
+        type: str
+        required: true
+        description: Username of database user which is used to create maxscale users and used in config for configured montitors.
+      database_login_user_password:
+        type: str
+        required: true
+        description: Password of database user which is used to create maxscale users and used in config for configured montitors.
+      database_login_host:
+        type: str
+        description: Host used for database user preparation.
+      database_login_socket:
+        type: str
+        description: Unix socket used for database user preparation.
+      maxscale_database_user_name:
+        default: maxscale
+        type: str
+        description: Name of maxscale user
+      maxscale_database_user_password:
+        type: str
+        required: true
+        description: Password for maxscale user
+      maxscale_database_user_host:
+        default: "%"
+        type: str
+        description: Host for maxscale user
+      maxscale_database_monitor_user_name:
+        default: maxscale_monitor_user
+        type: str
+        description: Name of maxscale monitor user
+      maxscale_database_monitor_user_password:
+        type: str
+        required: true
+        description: Password of maxscale monitor user
+      maxscale_database_monitor_user_host:
+        default: "%"
+        type: str
+        description: Host of maxscale monitor user
+      maxscale_use_docker:
+        default: true
+        type: bool
+        description: Install docker, download latest maxscale container and start it with your configuration.
+      maxscale_use_mariadb:
+        default: false
+        type: bool
+        description: Use MariaDB modules to prepare the MaxScale database users.
+      maxscale_install_repo_script:
+        default: true
+        type: bool
+        description: Use installscript provided by MariaDB to install repository if not using docker. Set to false if you want to manage it by yourself.
+      maxscale_docker_version:
+        default: latest
+        type: str
+        description: Set container version to use.
+      maxscale_docker_state:
+        default: started
+        type: str
+        description: Set state of container (started, stopped, absent, present).
+      maxscale_docker_restart:
+        default: false
+        type: bool
+        description: Restart container even if no changes happened.
+      maxscale_docker_pull_image:
+        default: false
+        type: bool
+        description: Set policy for image pulling when image is already present. True for always, false for never.
+      maxscale_docker_recreate:
+        default: false
+        type: bool
+        description: Force recreation of existing container.
+      maxscale_config_file_path:
+        default: /etc/maxscale.cnf
+        type: str
+        description: Path and name of maxscale config. This path will also be mounted in docker container and used as main config.
+      maxscale_admin_host:
+        default: 127.0.0.1
+        type: str
+        description: IP to bind MariaDB MaxScale GUI
+      maxscale_admin_port:
+        default: 8989
+        type: int
+        description: Port to bind MariaDB MaxScale GUI
+      maxscale_admin_secure_gui:
+        default: true
+        type: bool
+        description: Change SSL usage for MariaDB MaxScale GUI. By default true but no certificates are being created. You will have to create them yourself.
+      maxscale_config_server_list:
+        type: list
+        elements: dict
+        description: List of servers which maxscale should proxy to.
+        options:
+          name:
+            type: str
+            required: true
+            description: Name of the database server (can be chosen freely).
+          address:
+            type: str
+            required: true
+            description: Address or FQDN of the database server.
+          port:
+            type: int
+            required: true
+            description: Port of the database server.
+          protocol:
+            default: MariaDBBackend
+            type: str
+            description: Protocol to use for server connection. Currently no other protocols are supported.
+      maxscale_config_monitor_list:
+        type: list
+        elements: dict
+        description: List of maxscale monitors.
+        options:
+          name:
+            type: str
+            required: true
+            description: Name of monitor (can be chosen freely).
+          module:
+            type: str
+            required: true
+            description: Possible values galeramon, mariadbmon.
+          servers:
+            type: str
+            required: true
+            description: Comma separated list of servers which maxscale should include in configured monitor.
+          monitor_interval:
+            default: 2000ms
+            type: str
+            description: Interval in which the monitor checks the servers.
+      maxscale_config_service_list:
+        type: list
+        elements: dict
+        description: List of maxscale services.
+        options:
+          name:
+            type: str
+            required: true
+            description: Name of service (can be chosen freely).
+          router:
+            type: str
+            required: true
+            description: Possible values readwritesplit, readconnroute.
+          router_options:
+            type: str
+            description: Options for router. Values master, slave.
+          servers:
+            type: str
+            required: true
+            description: Comma separated list of servers which maxscale should include in configured service.
+      maxscale_config_use_sql_variables_in:
+        default: all
+        type: str
+        description: Queries which read session variables will be routed to. Possible values are master, all.
+      maxscale_config_listener_list:
+        type: list
+        elements: dict
+        description: List of MaxScale listeners.
+        options:
+          name:
+            type: str
+            required: true
+            description: Name of listener (can be chosen freely).
+          service:
+            type: str
+            required: true
+            description: Name of beforehand defined service to use.
+          protocol:
+            default: MariaDBClient
+            type: str
+            description: Protocol to use for listener. Possible values MariaDBClient, CDC.
+          port:
+            type: int
+            required: true
+            description: Port to use for listener.
+          address:
+            type: str
+            required: true
+            description: Address to bind listener to.
+      maxscale_config_filter_list:
+        type: list
+        elements: dict
+        description: List of filters.
+        options:
+          name:
+            type: str
+            required: true
+            description: Name of filter.
+          module:
+            default: namedserverfilter
+            type: str
+            description: Filter module.
+          matches:
+            type: list
+            elements: dict
+            required: true
+            description: Match rules for this filter.
+            options:
+              number:
+                type: str
+                required: true
+                description: Number of match in format 01, 02, ..., 10, 11. Maximum is 25 per filter.
+              value:
+                type: str
+                required: true
+                description: Pattern to match. Supports regular expressions.
+              target:
+                default: "->master"
+                type: str
+                description: Server to which matching statements should be routed, for example ->master, ->slave, or a server name.

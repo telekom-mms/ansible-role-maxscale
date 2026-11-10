@@ -1,0 +1,33 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    maxscale_use_docker: false
+    maxscale_use_mariadb: true
+    maxscale_database_user_password: your_password_here
+    maxscale_database_monitor_user_password: your_monitor_password_here
+    maxscale_config_server_list:
+      - name: "{{ ansible_facts['hostname'] }}"
+        address: 0.0.0.0
+        port: 3306
+    maxscale_config_monitor_list:
+      - name: Monitor
+        module: mariadbmon
+        servers: "{{ ansible_facts['hostname'] }}"
+    maxscale_config_service_list:
+      - name: Splitter-Service
+        router: readwritesplit
+        servers: "{{ ansible_facts['hostname'] }}"
+    maxscale_config_listener_list:
+      - name: Splitter-Listener
+        service: Splitter-Service
+        protocol: MariaDBClient
+        address: 0.0.0.0
+        port: 3307
+    database_login_host: "{{ ansible_facts['hostname'] }}"
+    database_login_user_name: root
+    database_login_user_password:
+    database_login_socket: "{{ '/run/mysqld/mysqld.sock' if ansible_facts['os_family'] == 'Debian' else '/var/lib/mysql/mysql.sock' }}"
+  roles:
+    - telekom_mms.maxscale

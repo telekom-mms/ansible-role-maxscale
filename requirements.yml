@@ -1,3 +1,5 @@
 ---
 collections:
+  - name: ansible.mariadb
   - name: ansible.mysql
+  - name: ansible.posix

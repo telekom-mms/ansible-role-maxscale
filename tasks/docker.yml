@@ -2,20 +2,20 @@
 # If this one fails: check if exec-shield is found in sysctl.conf and remove it
 # It has been removed with/in RHEL/CentOS 7
 # https://access.redhat.com/solutions/974563
-- name: enable ipv4 forwarding for docker usage
-  sysctl:
+- name: Enable ipv4 forwarding for docker usage
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: 1
     state: present
 
-- name: create maxscale config
-  template:
+- name: Create maxscale config
+  ansible.builtin.template:
     src: maxscale.cnf.j2
     dest: "{{ maxscale_config_file_path }}"
-    mode: 0644
+    mode: '0644'
 
-- name: start maxscale docker container
-  docker_container:
+- name: Start maxscale docker container
+  community.docker.docker_container:
     name: maxscale
     image: "mariadb/maxscale:{{ maxscale_docker_version | default('latest') }}"
     state: "{{ maxscale_docker_state | default('started') }}"
