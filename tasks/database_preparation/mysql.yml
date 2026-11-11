@@ -1,6 +1,8 @@
 ---
-- block:
-    - name: create maxscale db user
+- name: Prepare maxscale database users
+  delegate_to: "{{ database_login_host }}"
+  block:
+    - name: Create maxscale db user
       ansible.mysql.mysql_user:
         name: "{{ maxscale_database_user_name }}"
         password: "{{ maxscale_database_user_password }}"
@@ -15,20 +17,17 @@
           'mysql.proxies_priv': 'SELECT'
           'mysql.roles_mapping': 'SELECT'
         login_user: "{{ database_login_user_name }}"
-        #encrypted: true
         login_password: "{{ database_login_user_password }}"
         state: present
         append_privs: true
         login_unix_socket: "{{ database_login_socket }}"
 
-    - name: create maxscale monitor user
+    - name: Create maxscale monitor user
       ansible.mysql.mysql_user:
         name: "{{ maxscale_database_monitor_user_name }}"
         password: "{{ maxscale_database_monitor_user_password }}"
         host: "{{ maxscale_database_monitor_user_host }}"
         login_user: "{{ database_login_user_name }}"
-        #encrypted: true
         login_password: "{{ database_login_user_password }}"
         state: present
         login_unix_socket: "{{ database_login_socket }}"
-  delegate_to: "{{ database_login_host }}"

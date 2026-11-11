@@ -1,0 +1,117 @@
+output_template: |
+  <!-- BEGIN_ANSIBLE_DOCS -->
+
+  # Ansible role {{ metadata.galaxy_info.namespace }}.{{ metadata.galaxy_info.role_name }}
+
+  {{ metadata.galaxy_info.description }}
+
+  ## Supported Operating Systems
+  {% for platform in metadata.galaxy_info.platforms %}
+  - {{ platform.name }}
+    {%- if "versions" in platform %}
+    - {{ platform.versions | default([]) | join(', ') }}
+    {%- endif %}
+  {%- endfor %}
+
+  ## Role Variables
+  {% for entrypoint in argument_specs.keys() -%}
+  {% for path, options in entrypoint_options[entrypoint] -%}
+  {% if path | length == 1 -%}
+  {% for name, details in options.items() | sort() %}
+  - `{{ name }}`
+    - Default: `{{ details.display_default }}`
+    - Description: {{ details.display_description }}
+    - Type: {{ details.display_type }}
+    - Required: {{ details.display_required }}
+  {% for child_path, child_options in entrypoint_options[entrypoint] -%}
+  {% if child_path | length > 1 and child_path[1] == name %}
+    - Element options for `{{ child_path[1:] | join('[].') }}[]`:
+  {% for child_name, child_details in child_options.items() | sort() %}
+      - `{{ child_name }}`
+        - Default: `{{ child_details.display_default }}`
+        - Description: {{ child_details.display_description }}
+        - Type: {{ child_details.display_type }}
+        - Required: {{ child_details.display_required }}
+  {% endfor -%}
+  {% endif -%}
+  {% endfor -%}
+  {% endfor -%}
+  {% endif -%}
+  {% endfor -%}
+  {% endfor %}
+
+  ## Dependencies
+
+  {%- if ("dependencies" in metadata) and (metadata.dependencies | length > 0) %}
+  {%- for dependency in metadata.dependencies %}
+  - {{ dependency }}
+  {%- endfor %}
+  {%- else %}
+
+  None.
+  {%- endif %}
+
+  ## Requirements
+
+  The role requires the following Ansible collections:
+
+  ```yaml
+  {% include "requirements.yml" %}
+  ```
+
+  ```bash
+  ansible-galaxy collection install -r requirements.yml
+  ```
+
+  ## Example Playbook
+
+  ```
+  - hosts: all
+    roles:
+      - {{ metadata.galaxy_info.namespace }}.{{ metadata.galaxy_info.role_name }}
+  ```
+
+  ## Usage
+
+  ```
+  {%- raw %}
+  ---
+  maxscale_use_docker: false
+  maxscale_use_mariadb: true
+  maxscale_database_user_password: your_password_here
+  maxscale_database_monitor_user_password: your_monitor_password_here
+  maxscale_config_server_list:
+    - name: db01
+      address: 0.0.0.0
+      port: 3306
+  maxscale_config_monitor_list:
+    - name: Monitor
+      module: mariadbmon
+      servers: db01
+  maxscale_config_service_list:
+    - name: Splitter-Service
+      router: readwritesplit
+      servers: db01
+  maxscale_config_listener_list:
+    - name: Splitter-Listener
+      service: Splitter-Service
+      protocol: MariaDBClient
+      address: 0.0.0.0
+      port: 3307
+  database_login_host: db01
+  database_login_user_name: root
+  database_login_user_password:
+  database_login_socket: /run/mysqld/mysqld.sock
+  {%- endraw %}
+  ```
+
+  ## Author Information
+  {% for author in metadata.galaxy_info.author.split(', ') %}
+  - {{ author }}
+  {%- endfor %}
+
+  ## License
+
+  {{ metadata.galaxy_info.license }}
+
+  <!-- END_ANSIBLE_DOCS -->

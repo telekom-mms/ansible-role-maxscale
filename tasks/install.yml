@@ -1,22 +1,56 @@
 ---
-- name: set repository via MariaDB installscript
-  shell: curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash
-  when: 
-    - maxscale_install_repo_script|bool == true
+- name: Test if /etc/apt/sources.list.d/mariadb.sources exists
+  ansible.builtin.stat:
+    path: /etc/apt/sources.list.d/mariadb.sources
+  register: mariadb_sources_stat
 
-- name: install maxscale
-  yum:
+- name: Test if /etc/yum.repos.d/mariadb.repo exists
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/mariadb.repo
+  register: mariadb_repo_stat
+
+- name: Ensure MariaDB repository setup script is available
+  when:
+    - maxscale_install_repo_script | bool
+    - >-
+      (ansible_facts['os_family'] == 'Debian' and not mariadb_sources_stat.stat.exists) or
+      (ansible_facts['os_family'] == 'RedHat' and not mariadb_repo_stat.stat.exists)
+  block:
+    - name: Get repository installscript for MariaDB Repository
+      ansible.builtin.get_url:
+        url: https://r.mariadb.com/downloads/mariadb_repo_setup
+        dest: /tmp/mariadb_repo_setup
+        mode: '0755'
+      changed_when: false
+
+    - name: Run MariaDB repository setup script
+      ansible.builtin.command: /tmp/mariadb_repo_setup
+      register: mariadb_repo_setup_result
+      changed_when: true
+      failed_when: mariadb_repo_setup_result.rc != 0
+
+    - name: Remove MariaDB repository setup script
+      when:
+        - mariadb_repo_setup_result is defined
+        - mariadb_repo_setup_result.rc == 0
+      ansible.builtin.file:
+        path: /tmp/mariadb_repo_setup
+        state: absent
+
+- name: Install maxscale
+  ansible.builtin.package:
     name: maxscale
     state: present
 
-- name: create maxscale config
-  template:
+- name: Create maxscale config
+  ansible.builtin.template:
     src: maxscale.cnf.j2
     dest: "{{ maxscale_config_file_path }}"
-    mode: 0644
-  notify: verify maxscale config
+    mode: '0644'
+  notify: Verify maxscale config
 
-- name: enable maxscale
-  service:
+- name: Start and enable maxscale
+  ansible.builtin.service:
     name: maxscale
     enabled: true
+    state: started

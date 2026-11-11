@@ -1,0 +1,40 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Gather installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Verify maxscale is installed
+      ansible.builtin.assert:
+        that:
+          - "'maxscale' in ansible_facts.packages"
+
+    - name: Inspect maxscale configuration file
+      ansible.builtin.stat:
+        path: /etc/maxscale.cnf
+      register: maxscale_config
+
+    - name: Verify maxscale configuration file metadata
+      ansible.builtin.assert:
+        that:
+          - maxscale_config.stat.exists
+          - maxscale_config.stat.mode == '0644'
+          - maxscale_config.stat.pw_name == 'root'
+          - maxscale_config.stat.gr_name == 'root'
+
+    - name: Verify maxscale admin port is open
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: 8989
+        state: started
+        timeout: 30
+
+    - name: Verify maxscale listener port is open
+      ansible.builtin.wait_for:
+        host: 127.0.0.1
+        port: 3307
+        state: started
+        timeout: 30

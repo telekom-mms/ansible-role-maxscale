@@ -1,0 +1,99 @@
+---
+- name: Prepare
+  hosts: all
+  tasks:
+    - name: Update apt cache
+      when: ansible_facts['os_family'] == 'Debian'
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Update dnf cache
+      when: ansible_facts['os_family'] == 'RedHat'
+      ansible.builtin.dnf:
+        update_cache: true
+
+    - name: Install curl and python3-pymysql
+      when: ansible_facts['os_family'] == 'Debian'
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - python3-pymysql
+
+    - name: Remove curl-minimal
+      when:
+        - ansible_facts['os_family'] == 'RedHat'
+        - ansible_facts['distribution_major_version'] | int <= 9
+      ansible.builtin.dnf:
+        name: curl-minimal
+        state: absent
+
+    - name: Install curl
+      when:
+        - ansible_facts['os_family'] == 'RedHat'
+        - ansible_facts['distribution_major_version'] | int <= 9
+      ansible.builtin.dnf:
+        name: curl
+        state: present
+
+    - name: Install python3-pymysql
+      when: ansible_facts['os_family'] == 'RedHat'
+      ansible.builtin.dnf:
+        name: python3-PyMySQL
+        state: present
+
+    - name: Get repository installscript for MariaDB Repository
+      ansible.builtin.get_url:
+        url: https://r.mariadb.com/downloads/mariadb_repo_setup
+        dest: /tmp/mariadb_repo_setup
+        mode: '0755'
+      changed_when: false
+
+    - name: Run MariaDB repository setup script
+      ansible.builtin.command: /tmp/mariadb_repo_setup
+      register: mariadb_repo_setup_result
+      changed_when: true
+      failed_when: mariadb_repo_setup_result.rc != 0
+
+    - name: Remove MariaDB repository setup script
+      when:
+        - mariadb_repo_setup_result is defined
+        - mariadb_repo_setup_result.rc == 0
+      ansible.builtin.file:
+        path: /tmp/mariadb_repo_setup
+        state: absent
+
+    - name: Update apt cache
+      when: ansible_facts['os_family'] == 'Debian'
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Update dnf cache
+      when: ansible_facts['os_family'] == 'RedHat'
+      ansible.builtin.dnf:
+        update_cache: true
+
+    - name: Install mariadb-server and mariadb-client
+      when: ansible_facts['os_family'] == 'Debian'
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - mariadb-server
+        - mariadb-client
+
+    - name: Install mariadb-server and mariadb-client
+      when: ansible_facts['os_family'] == 'RedHat'
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - MariaDB-server
+        - MariaDB-client
+
+    - name: Ensure mariadb service is started
+      ansible.builtin.service:
+        name: mariadb
+        state: started
+        enabled: true

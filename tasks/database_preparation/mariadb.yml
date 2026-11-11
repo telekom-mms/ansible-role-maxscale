@@ -1,0 +1,33 @@
+---
+- name: Prepare maxscale database users
+  delegate_to: "{{ database_login_host }}"
+  block:
+    - name: Create maxscale db user
+      ansible.mariadb.mariadb_user:
+        name: "{{ maxscale_database_user_name }}"
+        password: "{{ maxscale_database_user_password }}"
+        host: "{{ maxscale_database_user_host }}"
+        priv:
+          '*.*': 'SHOW DATABASES'
+          'mysql.user': 'SELECT'
+          'mysql.db': 'SELECT'
+          'mysql.tables_priv': 'SELECT'
+          'mysql.columns_priv': 'SELECT'
+          'mysql.procs_priv': 'SELECT'
+          'mysql.proxies_priv': 'SELECT'
+          'mysql.roles_mapping': 'SELECT'
+        login_user: "{{ database_login_user_name }}"
+        login_password: "{{ database_login_user_password }}"
+        state: present
+        append_privs: true
+        login_unix_socket: "{{ database_login_socket }}"
+
+    - name: Create maxscale monitor user
+      ansible.mariadb.mariadb_user:
+        name: "{{ maxscale_database_monitor_user_name }}"
+        password: "{{ maxscale_database_monitor_user_password }}"
+        host: "{{ maxscale_database_monitor_user_host }}"
+        login_user: "{{ database_login_user_name }}"
+        login_password: "{{ database_login_user_password }}"
+        state: present
+        login_unix_socket: "{{ database_login_socket }}"
