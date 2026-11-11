@@ -13,4 +13,4 @@ on:
 
 jobs:
   call-linting:
-    uses: telekom-mms/.github/.github/workflows/ansible-lint.yml@ca56a672ce0a6216177ca668492a2d8eb1b318ae # main
+    uses: telekom-mms/.github/.github/workflows/ansible-lint.yml@ddf697ebc3c1a9259a65c6b3df8780b65c004fea # main
