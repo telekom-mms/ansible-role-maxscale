@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/telekom-mms/ansible-role-maxscale/tree/1.0.2) (2026-11-26)
+
+[Full Changelog](https://github.com/telekom-mms/ansible-role-maxscale/compare/1.0.1...1.0.2)
+
+**Merged pull requests:**
+
+- Update actions/setup-python digest to 6d4fd22 [\#12](https://github.com/telekom-mms/ansible-role-maxscale/pull/12) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [1.0.1](https://github.com/telekom-mms/ansible-role-maxscale/tree/1.0.1) (2026-11-11)
 
 [Full Changelog](https://github.com/telekom-mms/ansible-role-maxscale/compare/1.0.0...1.0.1)
