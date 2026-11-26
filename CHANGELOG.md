@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- Update dependency python to 3.15 [\#13](https://github.com/telekom-mms/ansible-role-maxscale/pull/13) ([renovate[bot]](https://github.com/apps/renovate))
 - Update actions/setup-python digest to 6d4fd22 [\#12](https://github.com/telekom-mms/ansible-role-maxscale/pull/12) ([renovate[bot]](https://github.com/apps/renovate))
 
 ## [1.0.1](https://github.com/telekom-mms/ansible-role-maxscale/tree/1.0.1) (2026-11-11)
